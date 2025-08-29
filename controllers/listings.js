@@ -95,7 +95,7 @@
 //     res.redirect("/listings");
 //   }
 
-
+const axios = require("axios");
 const Listing = require("../models/listing");
 const fetch = require("node-fetch"); // Use fetch for MapTiler
 
@@ -188,17 +188,25 @@ module.exports.renderEditForm = async (req, res) => {
 };
 
 module.exports.updateListing = async (req, res) => {
-  let { id } = req.params;
-  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  const { id } = req.params;
+  const updatedData = req.body.listing;
 
-  if (typeof req.file !== "undefined") {
-    let url = req.file.path;
-    let filename = req.file.filename;
-    listing.image = { url, filename };
-    await listing.save();
+  // ✅ If location field changed, fetch new coordinates from MapTiler
+  if (updatedData.location) {
+    const geoRes = await axios.get(
+      `https://api.maptiler.com/geocoding/${encodeURIComponent(updatedData.location)}.json`,
+      { params: { key: process.env.MAPTILER_KEY } }
+    );
+
+    if (geoRes.data.features && geoRes.data.features.length > 0) {
+      updatedData.geometry = geoRes.data.features[0].geometry; // { type: "Point", coordinates: [lng, lat] }
+    }
   }
-  req.flash("success", "Listing Updated!");
-  res.redirect(`/listings/${id}`);
+
+  const listing = await Listing.findByIdAndUpdate(id, { ...updatedData }, { new: true });
+
+  req.flash("success", "Successfully updated listing!");
+  res.redirect(`/listings/${listing._id}`);
 };
 
 module.exports.destroyListing = async (req, res) => {
