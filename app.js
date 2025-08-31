@@ -72,9 +72,9 @@ const sessionOptions={
 }
 
 // Home page 
-// app.get("/",(req,res)=>{
-//     res.send("Hi,I am a root");
-// })
+app.get("/",(req,res)=>{
+    res.render("home");
+})
 
 
 app.use(session(sessionOptions));
@@ -100,18 +100,7 @@ app.use("/listings",listingRouter);// Using the listing routes
 app.use("/listings/:id/reviews",reviewRouter);// Using the review routes
 app.use("/",userRouter);
 
-// app.get("/testListing",async (req,res)=>{
-//     let sampleListing= new Listing({
-//         title:"My New Villa",
-//         description:"By the Beach",
-//         price:1200,
-//         location:"Calangute, Goa",
-//         country:"India",
-//     });
-//     await sampleListing.save();
-//     console.log("sample was saved ");
-//     res.send("successful testing");
-// });
+
 
 app.use((req,res,next) =>{
     // console.log("All Bad");
