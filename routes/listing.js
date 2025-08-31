@@ -8,6 +8,7 @@ const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage }); // desination for uploading files and save files in cloud storage
 
+
 router
   .route("/")
   .get(wrapAsync(listingController.index)) // Index route

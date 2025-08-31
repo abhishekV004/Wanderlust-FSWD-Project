@@ -71,10 +71,7 @@ const sessionOptions={
     }
 }
 
-// Home page 
-app.get("/",(req,res)=>{
-    res.render("listings");
-})
+
 
 
 app.use(session(sessionOptions));
@@ -94,6 +91,11 @@ app.use((req,res,next)=>{
     res.locals.currUser=req.user; // Making the current user available in all templates
     res.locals.mapToken = process.env.MAPTILER_KEY;
     next();
+})
+
+// Home page 
+app.get("/",(req,res)=>{
+    res.redirect("listings");
 })
 
 app.use("/listings",listingRouter);// Using the listing routes
