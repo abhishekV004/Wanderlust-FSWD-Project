@@ -73,7 +73,7 @@ const sessionOptions={
 
 // Home page 
 app.get("/",(req,res)=>{
-    res.render("home");
+    res.render("listings");
 })
 
 
